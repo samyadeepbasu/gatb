@@ -52,7 +52,7 @@ if(isset($_POST["submit"]))
         	//On this if statement beign true, the file will get uploaded to the directory
            if(move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file))
            {
-           	echo "The file ".basename($_FILES["fileToUpload"]["name"])." has been uploaded";
+           	echo "The file ".basename($_FILES["fileToUpload"]["name"])." has been uploaded<br />";
 
            	//A file has been uploaded by the user in the given directory and it will be used by the following 
            	//lines to pass it onto the ALLGO engine
@@ -109,8 +109,9 @@ if(isset($_POST["submit"]))
             
 
 
+// The following piece of code will 
 
-            $ch = curl_init();
+$ch = curl_init();
 $var = curl_setopt($ch, CURLOPT_URL,"https://allgo.inria.fr/api/v1/jobs/".$job_id);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: multipart/form-data','Authorization: Token token=c00eefecd3834fd4acdd0df45c4bb77e'));
@@ -129,7 +130,7 @@ while(1)
    if(strpos($output,"output.log"))
    {
     //job is completed 
-   echo "Job is completed<br/>";
+   echo "Job is completed - Job ID: ".$job_id."<br/>";
    //get the position of output.log to extract the url from it
 
    $pos=strpos($output,"output.log");
@@ -138,15 +139,13 @@ while(1)
   
    
    }
+
    else
    {
-     //Job is being done
-    //Work in progress 
-    //Run a loader
-
-
-
+     $output=curl_exec($ch);
    }
+   // Here usage of an else loop is needed
+
 }
 
 
@@ -162,6 +161,7 @@ while(1)
 
 
 //echo $output[$pos+15];
+
 $pos=$pos+15;
 $link="";
 echo "<br />";
