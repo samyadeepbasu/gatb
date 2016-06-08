@@ -66,14 +66,16 @@ if(isset($_POST["submit"]))
             //curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query(array('job[webapp_id]' => '122','job[params]'=> "''")));
             //$fields = array('job' => array('webapp_id' => "122",'file_url' => urlencode("https://upload.wikimedia.org/wikipedia/en/5/5f/Original_Doge_meme.jpg")));
                     //urlencode(base64_encode('image1')),
-            $fields = array('webapp_id'=>"122",'file_url'=>"https://upload.wikimedia.org/wikipedia/en/5/5f/Original_Doge_meme.jpg");
+            //$fields = array('webapp_id'=>"122",'file_url'=>"https://upload.wikimedia.org/wikipedia/en/5/5f/Original_Doge_meme.jpg");
 
-            //$fields = array('webapp_id'=>"122",'files[1]'=>"@".realpath("small_test_reads.fa")); 
+            //$fields = array('webapp_id'=>"122",'files[0]'=>"@".$_FILES["fileToUpload"]["tmp_name"]); 
 
             //$fields = array('webapp_id'=>"122",'file_url'=>"localhost/inria/small_test_reads.fa");
 
             //url-ify the data for the POST
             //$field_string = http_build_query($fields,null, '&', PHP_QUERY_RFC3986);
+            $fields = array('webapp_id'=>"122",'file_url'=>"http://gatb-pipeline.gforge.inria.fr/test/small_test_reads.fa.gz");
+            //$fields = array('webapp_id'=>"122",'file_url'=>"https://localhost/inria/upload.php/small_test_reads.fa.gz");
 
             $fields_string = http_build_query(array('job' => $fields));
             //var_dump($fields_string);
@@ -127,13 +129,13 @@ $output=curl_exec($ch);
 while(1)
  {
 
-   if(strpos($output,"output.log"))
+   if(strpos($output,"assembly.fasta"))
    {
     //job is completed 
    echo "Job is completed - Job ID: ".$job_id."<br/>";
    //get the position of output.log to extract the url from it
 
-   $pos=strpos($output,"output.log");
+   $pos=strpos($output,"assembly.fasta");
    
     break;
   
@@ -162,7 +164,7 @@ while(1)
 
 //echo $output[$pos+15];
 
-$pos=$pos+15;
+$pos=$pos+19;
 $link="";
 echo "<br />";
 
@@ -176,14 +178,26 @@ while($output[$pos]!='"')
 //echo $link;
 
 //Encoded Download link to be provided to the end users
-
+echo $link."<br />";
 echo "<a href={$link}>Download your Result</a>";
+
+echo "<br />";
+
+  
+
+ 
+
+
+
+
+
             
 
            }
           //End of if statement for file upload option
 
            // This is when the file is nto uploaded properly
+
            else
            {
            	echo "Sorry, There was an error uploading the file";
