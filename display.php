@@ -18,7 +18,8 @@ $time = date('Y-m-d H:i:s');
 
 //This will create a unique name for all the files that are being uploaded 
 //Creation of a trigger is necessary for the file, which will ensure that it gets deleted on it's own after 1 hour.
-$target_file = $target_dir.$_POST["email"].$time.basename($_FILES["fileToUpload"]["name"]);
+$unique_id = $_GET["id"];
+$target_file = $target_dir.$unique_id.$time.basename($_FILES["fileToUpload"]["name"]);
 
 $uploadOk=1;
 
@@ -31,7 +32,7 @@ if(isset($_POST["submit"]))
 	
 	if(!empty($_FILES["fileToUpload"]))
 	{
-
+       
 
      //This is redundant as we already are creating unique names for the files which are being uploaded - So this is an optional step
         if(file_exists($target_file))
@@ -62,7 +63,7 @@ if(isset($_POST["submit"]))
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL,"https://allgo.inria.fr/api/v1/jobs");
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: multipart/form-data','Authorization: Token token='));
+            curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: multipart/form-data','Authorization: Token token=c00eefecd3834fd4acdd0df45c4bb77e'));
             //curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query(array('job[webapp_id]' => '122','job[params]'=> "''")));
             //$fields = array('job' => array('webapp_id' => "122",'file_url' => urlencode("https://upload.wikimedia.org/wikipedia/en/5/5f/Original_Doge_meme.jpg")));
                     //urlencode(base64_encode('image1')),
@@ -74,6 +75,9 @@ if(isset($_POST["submit"]))
 
             //url-ify the data for the POST
             //$field_string = http_build_query($fields,null, '&', PHP_QUERY_RFC3986);
+
+
+            $file_location = "https://localhost/inria/uploads/".$unique_id.$time.basename($_FILES["fileToUpload"]["name"]);
             $fields = array('webapp_id'=>"122",'file_url'=>"http://gatb-pipeline.gforge.inria.fr/test/small_test_reads.fa.gz");
             //$fields = array('webapp_id'=>"122",'file_url'=>"https://localhost/inria/upload.php/small_test_reads.fa.gz");
 
@@ -116,7 +120,7 @@ if(isset($_POST["submit"]))
 $ch = curl_init();
 $var = curl_setopt($ch, CURLOPT_URL,"https://allgo.inria.fr/api/v1/jobs/".$job_id);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: multipart/form-data','Authorization: Token token='));
+curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: multipart/form-data','Authorization: Token token=c00eefecd3834fd4acdd0df45c4bb77e'));
 
 $output=curl_exec($ch);
 
@@ -128,7 +132,8 @@ $output=curl_exec($ch);
 
 while(1)
  {
-
+  if(strpos($output,"allgo.log"))
+{
    if(strpos($output,"assembly.fasta"))
    {
     //job is completed 
@@ -141,6 +146,13 @@ while(1)
   
    
    }
+
+   else
+   {
+      header("Location:index.php");
+      exit;
+   }
+}
 
    else
    {
@@ -182,11 +194,21 @@ while($output[$pos]!='"')
 //echo "<a href={$link}>Download your Result</a>";
 
 
-  
+          //Computation for GC % 
     
 
+          $file = file_get_contents($link);
+          $len = strlen($file);
+          $g = substr_count($file, "G");
+          $c = substr_count($file,"C");
+          $total_gc = $g + $c ;
 
+          $percentage = ($total_gc) / $len;
+          
 
+          //Computation for number of contigs
+
+          $contig = substr_count($file,"scaffold");
 
 
             
@@ -335,10 +357,16 @@ while($output[$pos]!='"')
 <br /><br />
 <div class="container">
  <div class="row">
-  <div class="col-sm-4 text-center" style="font-family:Lato;font-size:35px;font-weight:700;">GC %</div>
+  <div class="col-sm-4 text-center" style="font-family:Lato;font-size:35px;font-weight:700;">GC %
+    
+      <p style="font-weight:300;font-size:40px;"><?php $percentage=$percentage*100; echo $percentage."%"; ?></p>
+  </div>
   
 
-  <div class="col-sm-4 text-center" style="font-family:Lato;font-size:35px;font-weight:700;">No. of Contigs</div>
+  <div class="col-sm-4 text-center" style="font-family:Lato;font-size:35px;font-weight:700;">No. of Contigs
+
+      <p style="font-weight:300;font-size:40px;"><?php echo $contig; ?></p>
+  </div>
     
 
   <div class="col-sm-4 text-center" style="font-family:Lato;font-size:35px;font-weight:700;">N50</div>
