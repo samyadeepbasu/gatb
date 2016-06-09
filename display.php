@@ -63,7 +63,7 @@ if(isset($_POST["submit"]))
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL,"https://allgo.inria.fr/api/v1/jobs");
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: multipart/form-data','Authorization: Token token=c00eefecd3834fd4acdd0df45c4bb77e'));
+            curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: multipart/form-data','Authorization: Token token=');
             //curl_setopt($ch, CURLOPT_POSTFIELDS,http_build_query(array('job[webapp_id]' => '122','job[params]'=> "''")));
             //$fields = array('job' => array('webapp_id' => "122",'file_url' => urlencode("https://upload.wikimedia.org/wikipedia/en/5/5f/Original_Doge_meme.jpg")));
                     //urlencode(base64_encode('image1')),
@@ -120,7 +120,7 @@ if(isset($_POST["submit"]))
 $ch = curl_init();
 $var = curl_setopt($ch, CURLOPT_URL,"https://allgo.inria.fr/api/v1/jobs/".$job_id);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: multipart/form-data','Authorization: Token token=c00eefecd3834fd4acdd0df45c4bb77e'));
+curl_setopt($ch, CURLOPT_HTTPHEADER,array('Content-type: multipart/form-data','Authorization: Token token='));
 
 $output=curl_exec($ch);
 
