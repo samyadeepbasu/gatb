@@ -1,4 +1,1 @@
-# gatb
-
-# Online Genome Assembler
-#Usage of ALLGO Engine
+# API for calling A||GO
