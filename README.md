@@ -1,1 +1,1 @@
-# API for calling A||GO
+-> Toy Scripts for calling A||GO using REST API
